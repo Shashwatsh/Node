@@ -68,7 +68,7 @@ def vm_start(name):
     if dom == None:
         print("Fatal Error: Cannot Look up Domain", file=sys.stderr)
         exit(1)
-    if dom.create(dom) < 0:
+    if dom.create() < 0:
         print('Fatal Error: Cannot boot Domain', file=sys.stderr)
         exit(1)
     return jsonify({
