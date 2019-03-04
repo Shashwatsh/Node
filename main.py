@@ -42,10 +42,28 @@ def create_vms():
         "msg": "function not implemented yet"
     })
 
-@app.route("/vms/<id>/start")
-def vm_start(id):
+@app.route("/vms/<name>/uuid")
+def get_dom_uuid(name):
+    dom = conn.lookupByName(name)
+    if dom == None:
+        print("Fatal Error: Cannot Loop up Domain", file=sys.stderr)
+        exit(1)
     return jsonify({
-        "msg": id
+        "uuid": dom.UUIDString()
+    })
+
+@app.route("/vms/<uuid>/start")
+def vm_start(uuid):
+    dom = conn.lookupByUUID(uuid)
+    if dom == None:
+        print("Fatal Error: Cannot Look up Domain", file=sys.stderr)
+        exit(1)
+    if dom.create(dom) < 0:
+        print('Fatal Error: Cannot boot Domain', file=sys.stderr)
+        exit(1)
+    return jsonify({
+        "code": 200,
+        "msg": "Domain Created!"
     })
 
 if __name__ == '__main__':
