@@ -27,3 +27,6 @@ def list_vms():
         print("Fatal Error: Cannot List Domains!", file=sys.stderr)
         exit(1)
     return jsonify(doms)
+
+if __name__ == '__main__':
+    app.run(host='10.211.55.3', port=5050, debug=True)
