@@ -28,7 +28,7 @@ def list_vms():
         exit(1)
     return jsonify(doms)
 
-@app.route("vms/list/active")
+@app.route("/vms/list/active")
 def list_active_doms():
     doms = conn.listAllDomains(libvirt.VIR_CONNECT_LIST_DOMAINS_ACTIVE)
     if doms == None:
@@ -36,13 +36,13 @@ def list_active_doms():
         exit(1)
     return jsonify(doms)
 
-@app.route("vms/create")
+@app.route("/vms/create")
 def create_vms():
     return jsonify({
         "msg": "function not implemented yet"
     })
 
-@app.route("vms/<id>/start")
+@app.route("/vms/<id>/start")
 def vm_start(id):
     return jsonify({
         "msg": id
