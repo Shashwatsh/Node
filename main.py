@@ -52,9 +52,19 @@ def get_dom_uuid(name):
         "uuid": dom.UUIDString()
     })
 
-@app.route("/vms/<uuid>/start")
-def vm_start(uuid):
-    dom = conn.lookupByUUID(uuid)
+@app.route("/vms/<name>/id")
+def get_dom_id(name):
+    dom = conn.lookupByName(name)
+    if dom == None:
+        print("Fatal Error: Cannot Loop up Domain", file=sys.stderr)
+        exit(1)
+    return jsonify({
+        "id": dom.ID()
+    })
+
+@app.route("/vms/<name>/start")
+def vm_start(id):
+    dom = conn.lookupByName(name)
     if dom == None:
         print("Fatal Error: Cannot Look up Domain", file=sys.stderr)
         exit(1)
