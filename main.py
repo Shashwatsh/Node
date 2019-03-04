@@ -63,7 +63,7 @@ def get_dom_id(name):
     })
 
 @app.route("/vms/<name>/start")
-def vm_start(id):
+def vm_start(name):
     dom = conn.lookupByName(name)
     if dom == None:
         print("Fatal Error: Cannot Look up Domain", file=sys.stderr)
