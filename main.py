@@ -28,5 +28,25 @@ def list_vms():
         exit(1)
     return jsonify(doms)
 
+@app.route("vms/list/active")
+def list_active_doms():
+    doms = conn.listAllDomains(libvirt.VIR_CONNECT_LIST_DOMAINS_ACTIVE)
+    if doms == None:
+        print("Fatal Error: Cannot List Domains!", file=sys.stderr)
+        exit(1)
+    return jsonify(doms)
+
+@app.route("vms/create")
+def create_vms():
+    return jsonify({
+        "msg": "function not implemented yet"
+    })
+
+@app.route("vms/<id>/start")
+def vm_start(id):
+    return jsonify({
+        "msg": id
+    })
+
 if __name__ == '__main__':
     app.run(host='10.211.55.3', port=5050, debug=True)
