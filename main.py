@@ -2,6 +2,7 @@ from __future__ import print_function
 from flask import Flask
 from flask import jsonify
 import libvirt
+from libvirt import libvirtError
 import sys
 
 
@@ -22,17 +23,19 @@ def ping():
 
 @app.route("/vms/list")
 def list_vms():
-    doms = conn.listDefinedDomains()
-    if doms == None:
-        print("Fatal Error: Cannot List Domains!", file=sys.stderr)
+    try
+        doms = conn.listDefinedDomains()
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
         exit(1)
     return jsonify(doms)
 
 @app.route("/vms/list/active")
 def list_active_doms():
-    doms = conn.listAllDomains(libvirt.VIR_CONNECT_LIST_DOMAINS_ACTIVE)
-    if doms == None:
-        print("Fatal Error: Cannot List Domains!", file=sys.stderr)
+    try:
+        doms = conn.listAllDomains(libvirt.VIR_CONNECT_LIST_DOMAINS_ACTIVE)
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
         exit(1)
     return jsonify(doms)
 
@@ -44,9 +47,10 @@ def create_vms():
 
 @app.route("/vms/<name>/uuid")
 def get_dom_uuid(name):
-    dom = conn.lookupByName(name)
-    if dom == None:
-        print("Fatal Error: Cannot Loop up Domain", file=sys.stderr)
+    try:
+        dom = conn.lookupByName(name)
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
         exit(1)
     return jsonify({
         "uuid": dom.UUIDString()
@@ -54,9 +58,10 @@ def get_dom_uuid(name):
 
 @app.route("/vms/<name>/id")
 def get_dom_id(name):
-    dom = conn.lookupByName(name)
-    if dom == None:
-        print("Fatal Error: Cannot Loop up Domain", file=sys.stderr)
+    try:
+        dom = conn.lookupByName(name)
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
         exit(1)
     return jsonify({
         "id": dom.ID()
@@ -64,17 +69,27 @@ def get_dom_id(name):
 
 @app.route("/vms/<name>/start")
 def vm_start(name):
-    dom = conn.lookupByName(name)
-    if dom == None:
-        print("Fatal Error: Cannot Look up Domain", file=sys.stderr)
+    try:
+        dom = conn.lookupByName(name)
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
         exit(1)
     if dom.create() < 0:
         print('Fatal Error: Cannot boot Domain', file=sys.stderr)
         exit(1)
     return jsonify({
         "code": 200,
-        "msg": "Domain Created!"
+        "msg": "Domain Started!"
     })
+
+@app.route("/vms/<name>/info")
+def vm_info(name):
+    try:
+        dom = conn.lookupByName(name)
+    except:
+        print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
+        exit(1)
+    return jsonify(dom.info())
 
 if __name__ == '__main__':
     app.run(host='10.211.55.3', port=5050, debug=True)
