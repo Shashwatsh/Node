@@ -23,7 +23,7 @@ def ping():
 
 @app.route("/vms/list")
 def list_vms():
-    try
+    try:
         doms = conn.listDefinedDomains()
     except:
         print("Fatal Error: Cannot Look Up Domain!", file=sys.stderr)
